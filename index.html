@@ -1,10 +1,64 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Copy Solidity Code</title>
+    <style>
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border: 1px solid #ccc;
+            overflow-x: auto;
+        }
+    </style>
+</head>
 <body>
-<h2>My SQA Practicals</h2>
 
-<a href="https://share.google/GIaYjf5inY1sVQ8v6" target="_blank">Practical 1</a><br><br>
-<a href="PUT_LINK_2_HERE" target="_blank">Practical 2</a><br><br>
-<a href="PUT_LINK_3_HERE" target="_blank">Practical 3</a><br><br>
+<h2>Click the button to copy Practical 1 code:</h2>
+
+<button onclick="copyCode()">Practical 1</button>
+
+<pre id="code">
+pragma solidity ^0.8.0;
+
+contract SimpleMiner {
+    uint public nonce;
+    address public miner;
+    uint constant DIFF = 2;
+
+    event Mined(address, uint);
+
+    function mine() public {
+        for (uint i; i < 1000; i++) {
+            if (uint(keccak256(abi.encodePacked(nonce, msg.sender))) % (10 ** DIFF) == 0) {
+                miner = msg.sender;
+                emit Mined(miner, nonce);
+                return;
+            }
+            nonce++;
+        }
+        revert("No solution found");
+    }
+
+    function getHash(uint _nonce) public view returns (bytes32) {
+        return keccak256(abi.encodePacked(_nonce, msg.sender));
+    }
+}
+</pre>
+
+<script>
+function copyCode() {
+    const code = document.getElementById("code").innerText;
+    navigator.clipboard.writeText(code)
+        .then(() => alert("Solidity code copied to clipboard!"))
+        .catch(err => console.error("Failed to copy:", err));
+}
+</script>
 
 </body>
 </html>
