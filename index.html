@@ -1,29 +1,99 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Copy Solidity Code</title>
-    <style>
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        pre {
-            background: #f4f4f4;
-            padding: 10px;
-            border: 1px solid #ccc;
-            overflow-x: auto;
-        }
-    </style>
+<meta charset="UTF-8">
+<title>Copy Practicals</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+    }
+    button {
+        padding: 8px 15px;
+        font-size: 14px;
+        margin: 5px 0;
+        cursor: pointer;
+    }
+    pre {
+        background: #f4f4f4;
+        border: 1px solid #ccc;
+        padding: 10px;
+        overflow-x: auto;
+    }
+    h2 {
+        margin-top: 40px;
+    }
+</style>
 </head>
 <body>
 
-<h2>Click the button to copy Practical 1 code:</h2>
+<h1>Click a Practical to Copy Its Code</h1>
 
-<button onclick="copyCode()">Practical 1</button>
+<!-- Practical 1 -->
+<h2>Practical 1</h2>
+<button onclick="copyCode('practical1')">Copy Practical 1</button>
+<pre id="practical1">
+import binascii
+from Crypto.PublicKey import RSA
+from Crypto import Random
 
-<pre id="code">
+class Client:
+    def __init__(self):
+        print("Kavita TYIT58")
+        key = RSA.generate(1024, Random.new().read)
+        self.public = key.publickey()
+
+    @property
+    def identity(self):
+        return binascii.hexlify(self.public.exportKey(format='DER')).decode()
+
+Kavita = Client()
+print("sender:", Kavita.identity)
+</pre>
+
+<!-- Practical 2 -->
+<h2>Practical 2</h2>
+<button onclick="copyCode('practical2')">Copy Practical 2</button>
+<pre id="practical2">
+from Crypto.PublicKey import RSA
+from Crypto.Signature import pkcs1_15
+from Crypto.Hash import SHA256
+import json, time
+
+sender = RSA.generate(2048)
+recipient = RSA.generate(2048)
+
+def sign_tx(k, m):
+    return pkcs1_15.new(k).sign(SHA256.new(m))
+
+def verify_tx(k, m, s):
+    try:
+        pkcs1_15.new(k).verify(SHA256.new(m), s)
+        return True
+    except:
+        return False
+
+txs = []
+
+for amt in [42.5, 99.9]:
+    data = {
+        "sender": sender.publickey().export_key().decode(),
+        "recipient": recipient.publickey().export_key().decode(),
+        "amount": amt,
+        "timestamp": time.time()
+    }
+    m = json.dumps(data, sort_keys=True).encode()
+    s = sign_tx(sender, m)
+    txs.append((amt, verify_tx(sender.publickey(), m, s)))
+
+for i, tx in enumerate(txs):
+    print(f"TX#{i}: amt={tx[0]}, valid={tx[1]}")
+</pre>
+
+<!-- Practical 5 -->
+<h2>Practical 5</h2>
+<button onclick="copyCode('practical5')">Copy Practical 5</button>
+<pre id="practical5">
 pragma solidity ^0.8.0;
 
 contract SimpleMiner {
@@ -51,11 +121,262 @@ contract SimpleMiner {
 }
 </pre>
 
+<!-- Practical 8 -->
+<h2>Practical 8</h2>
+<button onclick="copyCode('practical8')">Copy Practical 8</button>
+<pre id="practical8">
+import hashlib, datetime, binascii
+from Crypto.PublicKey import RSA
+from Crypto import Random
+
+class Client:
+    def __init__(self):
+        self.key = RSA.generate(1024, Random.new().read)
+
+    @property
+    def id(self):
+        return binascii.hexlify(self.key.publickey().exportKey(format='DER')).decode()
+
+class Transaction:
+    def __init__(self, s, r, v):
+        self.s = s
+        self.r = r
+        self.v = v
+        self.t = datetime.datetime.now()
+
+    def show(self):
+        sender = "Genesis" if self.s=="Genesis" else self.s.id
+        print("sender:", sender)
+        print("recipient:", self.r)
+        print("value:", self.v)
+        print("time:", self.t)
+        print("")
+
+class Block:
+    def __init__(self, prev=""):
+        self.prev = prev
+        self.txs = []
+
+# Clients
+A, B, C = Client(), Client(), Client()
+
+# Transactions
+t0 = Transaction("Genesis", A.id, 500.0)
+t1 = Transaction(A, B.id, 40.0)
+t2 = Transaction(A, C.id, 70.0)
+t3 = Transaction(B, C.id, 700.0)
+
+# Blockchain
+chain = []
+b0 = Block(); b0.txs = [t0]; chain.append(b0)
+b1 = Block(str(hash(b0))); b1.txs = [t1, t2]; chain.append(b1)
+b2 = Block(str(hash(b1))); b2.txs = [t3]; chain.append(b2)
+
+print("Number of blocks in the chain:", len(chain))
+for i, b in enumerate(chain):
+    print("block #", i)
+    for t in b.txs: t.show()
+    print("-------------------------")
+print("----------------------------")
+</pre>
+
 <script>
-function copyCode() {
-    const code = document.getElementById("code").innerText;
+function copyCode(id) {
+    const code = document.getElementById(id).innerText;
     navigator.clipboard.writeText(code)
-        .then(() => alert("Solidity code copied to clipboard!"))
+        .then(() => alert("Code copied to clipboard!"))
+        .catch(err => console.error("Failed to copy:", err));
+}
+</script>
+
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Copy Practicals</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+    }
+    button {
+        padding: 8px 15px;
+        font-size: 14px;
+        margin: 5px 0;
+        cursor: pointer;
+    }
+    pre {
+        background: #f4f4f4;
+        border: 1px solid #ccc;
+        padding: 10px;
+        overflow-x: auto;
+    }
+    h2 {
+        margin-top: 40px;
+    }
+</style>
+</head>
+<body>
+
+<h1>Click a Practical to Copy Its Code</h1>
+
+<!-- Practical 1 -->
+<h2>Practical 1</h2>
+<button onclick="copyCode('practical1')">Copy Practical 1</button>
+<pre id="practical1">
+import binascii
+from Crypto.PublicKey import RSA
+from Crypto import Random
+
+class Client:
+    def __init__(self):
+        print("Kavita TYIT58")
+        key = RSA.generate(1024, Random.new().read)
+        self.public = key.publickey()
+
+    @property
+    def identity(self):
+        return binascii.hexlify(self.public.exportKey(format='DER')).decode()
+
+Kavita = Client()
+print("sender:", Kavita.identity)
+</pre>
+
+<!-- Practical 2 -->
+<h2>Practical 2</h2>
+<button onclick="copyCode('practical2')">Copy Practical 2</button>
+<pre id="practical2">
+from Crypto.PublicKey import RSA
+from Crypto.Signature import pkcs1_15
+from Crypto.Hash import SHA256
+import json, time
+
+sender = RSA.generate(2048)
+recipient = RSA.generate(2048)
+
+def sign_tx(k, m):
+    return pkcs1_15.new(k).sign(SHA256.new(m))
+
+def verify_tx(k, m, s):
+    try:
+        pkcs1_15.new(k).verify(SHA256.new(m), s)
+        return True
+    except:
+        return False
+
+txs = []
+
+for amt in [42.5, 99.9]:
+    data = {
+        "sender": sender.publickey().export_key().decode(),
+        "recipient": recipient.publickey().export_key().decode(),
+        "amount": amt,
+        "timestamp": time.time()
+    }
+    m = json.dumps(data, sort_keys=True).encode()
+    s = sign_tx(sender, m)
+    txs.append((amt, verify_tx(sender.publickey(), m, s)))
+
+for i, tx in enumerate(txs):
+    print(f"TX#{i}: amt={tx[0]}, valid={tx[1]}")
+</pre>
+
+<!-- Practical 5 -->
+<h2>Practical 5</h2>
+<button onclick="copyCode('practical5')">Copy Practical 5</button>
+<pre id="practical5">
+pragma solidity ^0.8.0;
+
+contract SimpleMiner {
+    uint public nonce;
+    address public miner;
+    uint constant DIFF = 2;
+
+    event Mined(address, uint);
+
+    function mine() public {
+        for (uint i; i < 1000; i++) {
+            if (uint(keccak256(abi.encodePacked(nonce, msg.sender))) % (10 ** DIFF) == 0) {
+                miner = msg.sender;
+                emit Mined(miner, nonce);
+                return;
+            }
+            nonce++;
+        }
+        revert("No solution found");
+    }
+
+    function getHash(uint _nonce) public view returns (bytes32) {
+        return keccak256(abi.encodePacked(_nonce, msg.sender));
+    }
+}
+</pre>
+
+<!-- Practical 8 -->
+<h2>Practical 8</h2>
+<button onclick="copyCode('practical8')">Copy Practical 8</button>
+<pre id="practical8">
+import hashlib, datetime, binascii
+from Crypto.PublicKey import RSA
+from Crypto import Random
+
+class Client:
+    def __init__(self):
+        self.key = RSA.generate(1024, Random.new().read)
+
+    @property
+    def id(self):
+        return binascii.hexlify(self.key.publickey().exportKey(format='DER')).decode()
+
+class Transaction:
+    def __init__(self, s, r, v):
+        self.s = s
+        self.r = r
+        self.v = v
+        self.t = datetime.datetime.now()
+
+    def show(self):
+        sender = "Genesis" if self.s=="Genesis" else self.s.id
+        print("sender:", sender)
+        print("recipient:", self.r)
+        print("value:", self.v)
+        print("time:", self.t)
+        print("")
+
+class Block:
+    def __init__(self, prev=""):
+        self.prev = prev
+        self.txs = []
+
+# Clients
+A, B, C = Client(), Client(), Client()
+
+# Transactions
+t0 = Transaction("Genesis", A.id, 500.0)
+t1 = Transaction(A, B.id, 40.0)
+t2 = Transaction(A, C.id, 70.0)
+t3 = Transaction(B, C.id, 700.0)
+
+# Blockchain
+chain = []
+b0 = Block(); b0.txs = [t0]; chain.append(b0)
+b1 = Block(str(hash(b0))); b1.txs = [t1, t2]; chain.append(b1)
+b2 = Block(str(hash(b1))); b2.txs = [t3]; chain.append(b2)
+
+print("Number of blocks in the chain:", len(chain))
+for i, b in enumerate(chain):
+    print("block #", i)
+    for t in b.txs: t.show()
+    print("-------------------------")
+print("----------------------------")
+</pre>
+
+<script>
+function copyCode(id) {
+    const code = document.getElementById(id).innerText;
+    navigator.clipboard.writeText(code)
+        .then(() => alert("Code copied to clipboard!"))
         .catch(err => console.error("Failed to copy:", err));
 }
 </script>
